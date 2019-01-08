@@ -510,9 +510,10 @@ def on_select_dir_button_click(e):
 
             render_games_list()
     except Exception as x:
-        current_directory = None
-
+        traceback.print_exc()
         log('Error: ' + str(x))
+
+        current_directory = None
 
 
 def show_select_directory_msg():
@@ -720,6 +721,7 @@ def bgt_apply_changes():
 
         log('Done')
     except Exception as x:
+        traceback.print_exc()
         log('Error: ' + str(x))
     finally:
         enable_all_buttons(True)
@@ -796,7 +798,9 @@ def bgt_unpack_file(pathname, target_dir, callback):
 
         callback(pathname, target_dir)
     except Exception as x:
+        traceback.print_exc()
         log('Error: ' + str(x))
+
         set_progress_bar(0, 0)
     finally:
         enable_all_buttons(True)
@@ -970,6 +974,7 @@ def bgt_add_game(directory, new_game_data, delete_src_game_dir):
         counter += 1
         set_progress_bar(counter, len_operations)
     except Exception as x:
+        traceback.print_exc()
         log('Error: ' + str(x))
 
         if new_game_directory:
@@ -1148,6 +1153,7 @@ def game_edit_window(game_name=None, publisher=None, year=None, no_of_players=No
             try:
                 cover_art_image = ImageOps.fit(Image.open(_png_disc1_pathname), (226, 226), Image.ANTIALIAS)
             except Exception as x:
+                traceback.print_exc()
                 log('Error: ' + str(x))
                 
                 cover_art_image = Image.open(io.BytesIO(base64.b64decode(PNG_TMP)))
