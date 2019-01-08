@@ -53,6 +53,9 @@ BGT_STATE_APPLY_CHANGES = 2
 BGT_STATE_ADD_GAME = 3
 BGT_STATE_UNPACK_FILE = 4
 
+COVER_ART_WIDTH = 226
+COVER_ART_HEIGHT = 226
+
 # run time variables
 games_list = []
 current_directory = None
@@ -650,8 +653,8 @@ def write_games_list():
                 new_crc32 = file_get_crc32(igame_data['_png_disc1_pathname'])
                 if new_crc32 != igame_data['_png_disc1_crc32']:
                     image = Image.open(igame_data['_png_disc1_pathname'])
-                    if image.width != 226 or image.height != 226:
-                        image = ImageOps.fit(image, (226, 226), Image.ANTIALIAS)
+                    if image.width != COVER_ART_WIDTH or image.height != COVER_ART_HEIGHT:
+                        image = ImageOps.fit(image, (COVER_ART_WIDTH, COVER_ART_HEIGHT), Image.ANTIALIAS)
 
                     gamedata_directory = os.path.join(igame_data['_directory'], 'GameData')
                     igame_data['_png_disc1_pathname'] = os.path.join(gamedata_directory, igame_data['Discs'].split(',')[0] + '.png')
@@ -1107,7 +1110,7 @@ def game_edit_window(game_name=None, publisher=None, year=None, no_of_players=No
 
     if _png_disc1_pathname:
         try:
-            cover_art_image = ImageOps.fit(Image.open(_png_disc1_pathname), (226, 226), Image.ANTIALIAS)
+            cover_art_image = ImageOps.fit(Image.open(_png_disc1_pathname), (COVER_ART_WIDTH, COVER_ART_HEIGHT), Image.ANTIALIAS)
         except Exception as x:
             traceback.print_exc()
             log('Error: ' + str(x))
@@ -1118,7 +1121,7 @@ def game_edit_window(game_name=None, publisher=None, year=None, no_of_players=No
 
     cover_art_tk_image = ImageTk.PhotoImage(cover_art_image)
 
-    cover_art_label = tkinter.Label(window, text='', image=cover_art_tk_image, cursor='hand1', width=226, height=226)
+    cover_art_label = tkinter.Label(window, text='', image=cover_art_tk_image, cursor='hand1', width=COVER_ART_WIDTH, height=COVER_ART_HEIGHT)
     cover_art_label.pack(fill=tkinter.X)
 
     tkinter.ttk.Separator(window).pack(fill=tkinter.X)
@@ -1155,7 +1158,7 @@ def game_edit_window(game_name=None, publisher=None, year=None, no_of_players=No
             _png_disc1_pathname = image_pathname.name
 
             try:
-                cover_art_image = ImageOps.fit(Image.open(_png_disc1_pathname), (226, 226), Image.ANTIALIAS)
+                cover_art_image = ImageOps.fit(Image.open(_png_disc1_pathname), (COVER_ART_WIDTH, COVER_ART_HEIGHT), Image.ANTIALIAS)
             except Exception as x:
                 traceback.print_exc()
                 log('Error: ' + str(x))
