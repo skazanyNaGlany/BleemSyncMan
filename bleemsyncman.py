@@ -1088,7 +1088,7 @@ def game_edit_window(game_name=None, publisher=None, year=None, no_of_players=No
     window.grab_set()
     window.update()
 
-    window.title('Enter new game data')
+    window.title('Enter game data')
 
     tkinter.Label(window, text='Title:').pack(fill=tkinter.X)
     title_var = tkinter.StringVar(value=game_name)
