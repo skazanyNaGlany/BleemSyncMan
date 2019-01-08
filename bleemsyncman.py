@@ -667,7 +667,6 @@ def write_games_list():
 
 
 def sync_all():
-    # return
     if hasattr(os, 'sync'):
         log('Syncing disk (force write of everything to disk)')
         os.sync()
@@ -816,7 +815,6 @@ def bgt_add_game(directory, new_game_data, delete_src_game_dir):
         log('Adding game from ' + directory)
 
         new_game_id = len(games_list) + 1
-        # new_game_id = 5
         new_game_directory = os.path.join(current_directory, 'Games', str(new_game_id))
         new_gamedata_directory = os.path.join(new_game_directory, 'GameData')
 
@@ -1032,9 +1030,6 @@ def on_delete_game_button_click(e):
     # mark on listbox
     games_listbox_set_text(selected_game_index, games_list[selected_game_index]['Title'] + ' (deleted)')
 
-    # games_listbox.delete(selected_game_index)
-    # games_listbox.insert(selected_game_index, games_list[selected_game_index]['Title'] + ' (deleted)')
-
     # mark as deleted
     games_list[selected_game_index]['_status'] = 'deleted'
 
@@ -1055,9 +1050,6 @@ def on_delete_game_permanently_button_click(e):
 
     # mark on listbox
     games_listbox_set_text(selected_game_index, games_list[selected_game_index]['Title'] + ' (deleted permanently)')
-
-    # games_listbox.delete(selected_game_index)
-    # games_listbox.insert(selected_game_index, games_list[selected_game_index]['Title'] + ' (deleted permanently)')
 
     # mark as deleted
     games_list[selected_game_index]['_status'] = 'deleted_permanently'
@@ -1084,7 +1076,6 @@ def game_edit_window(game_name=None, publisher=None, year=None, no_of_players=No
 
     window = tkinter.Toplevel(root_window)
 
-    # window.attributes('-topmost', True)
     window.wait_visibility()
     window.grab_set()
     window.update()
@@ -1108,7 +1099,6 @@ def game_edit_window(game_name=None, publisher=None, year=None, no_of_players=No
     tkinter.Entry(window, textvariable=year_var).pack(fill=tkinter.X)
 
     tkinter.Label(window, text='Cover art (click to change):').pack(fill=tkinter.X)
-    # cover_art_image = tkinter.PhotoImage(file=_png_disc1_pathname, width=226, height=226)
 
     try:
         cover_art_image = ImageOps.fit(Image.open(_png_disc1_pathname), (226, 226), Image.ANTIALIAS)
@@ -1154,8 +1144,6 @@ def game_edit_window(game_name=None, publisher=None, year=None, no_of_players=No
         image_pathname = tkinter.filedialog.askopenfile(initialdir='~/Downloads', filetypes = (("png files","*.png"), ("jpg files","*.jpg"), ("all files","*.*")))
         if image_pathname:
             _png_disc1_pathname = image_pathname.name
-
-            # cover_art_image = tkinter.PhotoImage(file=_png_disc1_pathname, width=226, height=226)
 
             try:
                 cover_art_image = ImageOps.fit(Image.open(_png_disc1_pathname), (226, 226), Image.ANTIALIAS)
@@ -1378,8 +1366,6 @@ def on_edit_game_button_click(e):
 
         # mark on listbox
         games_listbox_set_text(selected_game_index, games_list[selected_game_index]['Title'] + ' (changed)')
-        # games_listbox.delete(selected_game_index)
-        # games_listbox.insert(selected_game_index, games_list[selected_game_index]['Title'] + ' (changed)')
 
         # mark as changed
         games_list[selected_game_index]['_status'] = 'changed'
