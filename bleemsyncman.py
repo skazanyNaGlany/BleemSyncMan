@@ -1105,11 +1105,15 @@ def game_edit_window(game_name=None, publisher=None, year=None, no_of_players=No
 
     tkinter.Label(window, text='Cover art (click to change):').pack(fill=tkinter.X)
 
-    try:
-        cover_art_image = ImageOps.fit(Image.open(_png_disc1_pathname), (226, 226), Image.ANTIALIAS)
-    except Exception as x:
-        log('Error: ' + str(x))
-        
+    if _png_disc1_pathname:
+        try:
+            cover_art_image = ImageOps.fit(Image.open(_png_disc1_pathname), (226, 226), Image.ANTIALIAS)
+        except Exception as x:
+            traceback.print_exc()
+            log('Error: ' + str(x))
+
+            cover_art_image = Image.open(io.BytesIO(base64.b64decode(PNG_TMP)))
+    else:
         cover_art_image = Image.open(io.BytesIO(base64.b64decode(PNG_TMP)))
 
     cover_art_tk_image = ImageTk.PhotoImage(cover_art_image)
