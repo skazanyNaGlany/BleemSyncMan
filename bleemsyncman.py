@@ -32,6 +32,7 @@ import tempfile
 import traceback
 import zlib
 import io
+import webbrowser
 
 from PIL import Image, ImageTk, ImageOps
 from operator import itemgetter
@@ -46,6 +47,7 @@ if sys.version_info[0] < 3 or sys.version_info[1] < 5:
     exit(2)
 
 
+HOMEPAGE_URL = 'https://github.com/skazanyNaGlany/BleemSyncMan'
 GAMES_DELETED_DIR = 'Games.deleted'
 
 BGT_STATE_NONE = 1
@@ -398,6 +400,9 @@ move_game_down_button.pack(fill=tkinter.X)
 
 apply_button = tkinter.Button(root_window, text='Apply changes')
 apply_button.pack(fill=tkinter.X)
+
+homepage_button = tkinter.Button(root_window, text='Homepage')
+homepage_button.pack(fill=tkinter.X)
 
 exit_button = tkinter.Button(root_window, text='Exit')
 exit_button.pack(fill=tkinter.X)
@@ -1392,6 +1397,10 @@ def on_listbox_double_click(e):
     edit_game_button.event_generate('<ButtonRelease-1>', when='tail')
 
 
+def on_homepage_button_click(e):
+    webbrowser.open_new(HOMEPAGE_URL)
+
+
 def background_thread_loop():
     global background_thread_run
     global background_thread_states
@@ -1426,6 +1435,7 @@ add_game_button.bind('<ButtonRelease-1>', on_add_game_button_click)
 add_game_from_arch_button.bind('<ButtonRelease-1>', on_add_game_from_arch_button_click)
 edit_game_button.bind('<ButtonRelease-1>', on_edit_game_button_click)
 games_listbox.bind('<Double-1>', on_listbox_double_click)
+homepage_button.bind('<ButtonRelease-1>', on_homepage_button_click)
 
 background_thread = threading.Thread(target=background_thread_loop)
 background_thread.start()
