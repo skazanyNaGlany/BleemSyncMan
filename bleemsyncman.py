@@ -468,6 +468,8 @@ def load_games_list(directory):
 
         if os.path.exists(parsed_game_data['_png_disc1_pathname']):
             parsed_game_data['_png_disc1_crc32'] = file_get_crc32(parsed_game_data['_png_disc1_pathname'])
+        else:
+            parsed_game_data['_png_disc1_pathname'] = ''
 
         games_list.append(parsed_game_data)
 
