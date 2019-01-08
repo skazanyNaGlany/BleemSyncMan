@@ -1034,6 +1034,10 @@ def select_next_to_game(game_index):
 def on_delete_game_button_click(e):
     global games_list
 
+    if not current_directory:
+        show_select_directory_msg()
+        return
+
     selected_game_index = games_listbox.curselection()
     if not selected_game_index:
         return
@@ -1054,6 +1058,10 @@ def on_delete_game_button_click(e):
 
 def on_delete_game_permanently_button_click(e):
     global games_list
+
+    if not current_directory:
+        show_select_directory_msg()
+        return
 
     selected_game_index = games_listbox.curselection()
     if not selected_game_index:
@@ -1365,6 +1373,10 @@ def on_exit_button_click(e):
 
 def on_edit_game_button_click(e):
     global games_list
+
+    if not current_directory:
+        show_select_directory_msg()
+        return
 
     selected_game_index = games_listbox.curselection()
     if not selected_game_index:
