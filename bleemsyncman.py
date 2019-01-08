@@ -49,6 +49,7 @@ if sys.version_info[0] < 3 or sys.version_info[1] < 5:
 
 HOMEPAGE_URL = 'https://github.com/skazanyNaGlany/BleemSyncMan'
 GAMES_DELETED_DIR = 'Games.deleted'
+GAMES_DIR = 'Games'
 
 BGT_STATE_NONE = 1
 BGT_STATE_APPLY_CHANGES = 2
@@ -513,6 +514,12 @@ def on_select_dir_button_click(e):
                 log('Creating ' + games_deleted_dir)
 
                 os.mkdir(games_deleted_dir)
+
+            games_dir = os.path.join(current_directory, GAMES_DIR)
+            if not os.path.exists(games_dir):
+                log('Creating ' + games_dir)
+
+                os.mkdir(games_dir)
 
             log('Loaded ' + str(len(games_list)) + ' games')
 
