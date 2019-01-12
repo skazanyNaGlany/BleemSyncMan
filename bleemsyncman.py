@@ -9,6 +9,8 @@
 
 # mkdosfs /dev/sdc1 -s 64 -F 32 -n SONY
 # pyinstaller --onefile --noconsole bleemsyncman.py
+# sudo pyinstaller --onefile --noconsole --hidden-import='PIL._tkinter_finder' bleemsyncman.py
+
 
 import tkinter
 import tkinter.ttk
