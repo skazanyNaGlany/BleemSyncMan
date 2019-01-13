@@ -524,7 +524,7 @@ def on_select_dir_button_click(e):
         return
 
     try:
-        directory = tkinter.filedialog.askdirectory(initialdir='/home/sng/psc')
+        directory = tkinter.filedialog.askdirectory()
         if directory:
             log('Loading games from ' + directory)
 
@@ -1221,7 +1221,7 @@ def game_edit_window(game_name=None, publisher=None, year=None, no_of_players=No
         nonlocal cover_art_label
         nonlocal _png_disc1_pathname
 
-        image_pathname = tkinter.filedialog.askopenfile(initialdir='~/Downloads', filetypes = (("png files","*.png"), ("jpg files","*.jpg"), ("all files","*.*")))
+        image_pathname = tkinter.filedialog.askopenfile(filetypes = (("png files","*.png"), ("jpg files","*.jpg"), ("all files","*.*")))
         if image_pathname:
             _png_disc1_pathname = image_pathname.name
 
@@ -1309,7 +1309,7 @@ def on_add_game_from_arch_button_click(e):
     if background_thread_states:
         return
 
-    file_data = tkinter.filedialog.askopenfile(initialdir='~/Downloads', filetypes = (("7z files","*.7z"), ("zip files","*.zip"), ("rar files","*.rar"), ("all files","*.*")))
+    file_data = tkinter.filedialog.askopenfile(filetypes = (("7z files","*.7z"), ("zip files","*.zip"), ("rar files","*.rar"), ("all files","*.*")))
     if file_data:
         enable_ui(False)
 
@@ -1351,7 +1351,7 @@ def on_add_game_button_click(e):
         return
 
     if not directory:
-        directory = tkinter.filedialog.askdirectory(initialdir='~/Downloads/mt')
+        directory = tkinter.filedialog.askdirectory()
 
     if directory:
         enable_ui(False)
