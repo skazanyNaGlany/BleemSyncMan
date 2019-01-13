@@ -375,8 +375,6 @@ games_listbox_scrollbar = tkinter.Scrollbar(games_listbox, orient=tkinter.VERTIC
 games_listbox_scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 games_listbox.config(yscrollcommand=games_listbox_scrollbar.set)
 
-# tkinter.Scrollbar(games_listbox, orient=tkinter.VERTICAL, command=games_listbox.yview).pack(side=tkinter.RIGHT, fill=tkinter.Y)
-
 log_text = tkinter.Text(root_window, height=6)
 log_text.pack(fill=tkinter.BOTH)
 log_text.pack_propagate(False)
@@ -384,8 +382,6 @@ log_text.pack_propagate(False)
 log_text_scrollbar = tkinter.Scrollbar(log_text, orient=tkinter.VERTICAL, command=log_text.yview)
 log_text_scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 log_text.config(yscrollcommand=log_text_scrollbar.set)
-
-# tkinter.Scrollbar(log_text, orient=tkinter.VERTICAL, command=log_text.yview).pack(side=tkinter.RIGHT, fill=tkinter.Y)
 
 select_dir_button = tkinter.Button(root_window, text='Select directory')
 select_dir_button.pack(fill=tkinter.X)
