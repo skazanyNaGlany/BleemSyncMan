@@ -10,4 +10,6 @@ Features:
 * create Game.ini and pcsx.cfg
 * create CUE file if missing
 
+Sorry, buy 2-discs games are not supported.
+
 Supports: Windows, Linux
