@@ -29,13 +29,16 @@ import string
 import base64
 import sys
 import re
-import pyunpack
-import patoolib
 import tempfile
 import traceback
 import zlib
 import io
 import webbrowser
+
+# archives support
+import pyunpack
+import patoolib
+import libarchive   # pip3 install libarchive-c
 
 from PIL import Image, ImageTk, ImageOps
 from operator import itemgetter
@@ -367,6 +370,8 @@ DEFAULT_GAME_TITLE = ''
 DEFAULT_GAME_PUBLISHER = 'Unknown'
 DEFAULT_GAME_NO_OF_PLAYERS = 1
 DEFAULT_GAME_YEAR = 1994
+
+system_name = platform.system().lower()
 
 root_window = tkinter.Tk()
 root_window.title(WINDOW_TITLE)
@@ -722,7 +727,6 @@ def sync_all():
 
 
 def run_bleem_sync():
-    system_name = platform.system().lower()
     exe_pathname = None
 
     os.chdir(os.path.join(current_directory, 'BleemSync'))
@@ -771,8 +775,6 @@ def bgt_apply_changes():
     except Exception as x:
         traceback.print_exc()
         log('Error: ' + str(x))
-    finally:
-        enable_ui(True)
 
 
 def set_progress_bar(current_counter, len_operations):
@@ -826,23 +828,31 @@ def bin_file_find_disc_id(bin_path):
 
 
 def bgt_unpack_file(pathname, target_dir, callback):
+    cwd = os.getcwd()
+
     try:
         if not current_directory:
             show_select_directory_msg()
             return
 
-        enable_ui(False)
-
         if os.path.exists(target_dir):
             deltree(target_dir)
 
         os.makedirs(target_dir)
+        os.chdir(target_dir)
 
         log('Unpacking ' + pathname + ' to ' + target_dir)
 
-        pyunpack.Archive(pathname).extractall(target_dir)
+        if system_name == 'linux':
+            libarchive.extract_file(pathname)
+        elif system_name == 'windows':
+            pyunpack.Archive(pathname).extractall(target_dir)
+        else:
+            raise NotImplementedError('Not implemented for ' + system_name)
 
         sync_all()
+
+        os.chdir(cwd)
 
         callback(pathname, target_dir)
     except Exception as x:
@@ -851,7 +861,7 @@ def bgt_unpack_file(pathname, target_dir, callback):
 
         set_progress_bar(0, 0)
     finally:
-        enable_ui(True)
+        os.chdir(cwd)
 
 
 def bgt_add_game(directory, new_game_data, delete_src_game_dir):
@@ -861,8 +871,6 @@ def bgt_add_game(directory, new_game_data, delete_src_game_dir):
         if not current_directory:
             show_select_directory_msg()
             return
-
-        enable_ui(False)
 
         log('Adding game from ' + directory)
 
@@ -1042,8 +1050,6 @@ def bgt_add_game(directory, new_game_data, delete_src_game_dir):
         set_progress_bar(100, 100)
 
         log('Done')
-
-        enable_ui(True)
 
 
 def on_apply_button_click(e):
@@ -1321,16 +1327,18 @@ def on_add_game_button_click(e):
     global on_add_game_button_click_user_data
     global background_thread_states
 
-    if not ui_enabled:
+    force = False
+    if on_add_game_button_click_user_data:
+        force = on_add_game_button_click_user_data['force']
+
+    if not ui_enabled and not force:
         return
 
     directory = None
-    force = False
     delete_src_game_dir = False
 
     if on_add_game_button_click_user_data:
         directory = on_add_game_button_click_user_data['directory']
-        force = on_add_game_button_click_user_data['force']
         delete_src_game_dir = on_add_game_button_click_user_data['delete_src_game_dir']
 
         on_add_game_button_click_user_data = {}
@@ -1424,7 +1432,10 @@ def enable_ui(enable):
     delete_game_permanently_button['state'] = new_state
     edit_game_button['state'] = new_state
     homepage_button['state'] = new_state
-    games_listbox['state'] = new_state
+
+    # do not disable games_listbox cause
+    # will not be able to edit it contents
+    # games_listbox['state'] = new_state
 
     ui_enabled = new_state == tkinter.NORMAL
 
@@ -1512,6 +1523,9 @@ def background_thread_loop():
                 bgt_add_game(background_thread_data['directory'], background_thread_data['game_data'], background_thread_data['delete_src_game_dir'])
             elif background_thread_state == BGT_STATE_UNPACK_FILE:
                 bgt_unpack_file(background_thread_data['pathname'], background_thread_data['target_dir'], background_thread_data['callback'])
+        else:
+            if not ui_enabled:
+                enable_ui(True)
 
         time.sleep(1)
 
