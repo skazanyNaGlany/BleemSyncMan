@@ -52,6 +52,9 @@ if sys.version_info[0] < 3 or sys.version_info[1] < 5:
 HOMEPAGE_URL = 'https://github.com/skazanyNaGlany/BleemSyncMan'
 GAMES_DELETED_DIR = 'Games.deleted'
 GAMES_DIR = 'Games'
+GAMEDATA_NAME = 'GameData'
+GAME_INI_NAME = 'Game.ini'
+PCSX_CFG_NAME = 'pcsx.cfg'
 
 BGT_STATE_NONE = 1
 BGT_STATE_APPLY_CHANGES = 2
@@ -460,7 +463,7 @@ def load_games_list(directory):
 
     games_list = []
 
-    games_directory = os.path.join(directory, 'Games')
+    games_directory = os.path.join(directory, GAMES_DIR)
 
     if not os.path.exists(games_directory):
         log('Creating ' + games_directory)
@@ -469,10 +472,10 @@ def load_games_list(directory):
     indexes = sorted([int(name) for name in os.listdir(games_directory) if name.isnumeric()])
 
     for iindex in indexes:
-        gamedata_directory = os.path.join(games_directory, str(iindex), 'GameData')
+        gamedata_directory = os.path.join(games_directory, str(iindex), GAMEDATA_NAME)
 
-        game_ini = os.path.join(gamedata_directory, 'Game.ini')
-        pcsx_cfg = os.path.join(gamedata_directory, 'pcsx.cfg')
+        game_ini = os.path.join(gamedata_directory, GAME_INI_NAME)
+        pcsx_cfg = os.path.join(gamedata_directory, PCSX_CFG_NAME)
 
         if not os.path.exists(game_ini) or not os.path.exists(pcsx_cfg):
             log(game_ini + ' or ' + pcsx_cfg + ' does not exists, stopping')
@@ -664,7 +667,7 @@ def write_games_list():
     for igame_data in games_list.copy():
         if igame_data['_status'] == 'changed':
             # rewrite Game.ini
-            game_ini_path = os.path.join(igame_data['_directory'], 'GameData', 'Game.ini')
+            game_ini_path = os.path.join(igame_data['_directory'], GAMEDATA_NAME, GAME_INI_NAME)
 
             with open(game_ini_path, 'w+') as f:
                 game_ini_data = GAME_INI_TMP.format(
@@ -685,7 +688,7 @@ def write_games_list():
                     if image.width != COVER_ART_WIDTH or image.height != COVER_ART_HEIGHT:
                         image = ImageOps.fit(image, (COVER_ART_WIDTH, COVER_ART_HEIGHT), Image.ANTIALIAS)
 
-                    gamedata_directory = os.path.join(igame_data['_directory'], 'GameData')
+                    gamedata_directory = os.path.join(igame_data['_directory'], GAMEDATA_NAME)
                     igame_data['_png_disc1_pathname'] = os.path.join(gamedata_directory, igame_data['Discs'].split(',')[0] + '.png')
                     image.save(igame_data['_png_disc1_pathname'])
 
@@ -863,8 +866,8 @@ def bgt_add_game(directory, new_game_data, delete_src_game_dir):
         log('Adding game from ' + directory)
 
         new_game_id = len(games_list) + 1
-        new_game_directory = os.path.join(current_directory, 'Games', str(new_game_id))
-        new_gamedata_directory = os.path.join(new_game_directory, 'GameData')
+        new_game_directory = os.path.join(current_directory, GAMES_DIR, str(new_game_id))
+        new_gamedata_directory = os.path.join(new_game_directory, GAMEDATA_NAME)
 
         log('Creating ' + new_gamedata_directory)
         if not os.path.exists(new_gamedata_directory):
@@ -892,8 +895,8 @@ def bgt_add_game(directory, new_game_data, delete_src_game_dir):
         counter += 1
         set_progress_bar(counter, len_operations)
 
-        game_ini_path = os.path.join(new_gamedata_directory, 'Game.ini')
-        pcsx_cfg_path = os.path.join(new_gamedata_directory, 'pcsx.cfg')
+        game_ini_path = os.path.join(new_gamedata_directory, GAME_INI_NAME)
+        pcsx_cfg_path = os.path.join(new_gamedata_directory, PCSX_CFG_NAME)
 
         if not os.path.exists(game_ini_path):
             log('Searching for disc ID')
@@ -1344,7 +1347,7 @@ def on_add_game_button_click(e):
     if directory:
         enable_ui(False)
 
-        if not os.path.exists(os.path.join(directory, 'Game.ini')):
+        if not os.path.exists(os.path.join(directory, GAME_INI_NAME)):
             game_name = detect_game_name(directory)
             if game_name:
                 log('Detected game name: ' + game_name)
