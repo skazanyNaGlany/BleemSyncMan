@@ -64,7 +64,7 @@ COVER_ART_HEIGHT = 226
 # run time variables
 games_list = []
 current_directory = None
-buttons_enabled = True
+ui_enabled = True
 background_thread = None
 background_thread_run = True
 background_thread_states = []
@@ -502,6 +502,9 @@ def render_games_list():
 def on_select_dir_button_click(e):
     global current_directory
 
+    if not ui_enabled:
+        return
+
     try:
         directory = tkinter.filedialog.askdirectory(initialdir='/home/sng/psc')
         if directory:
@@ -574,6 +577,9 @@ def move_game(up):
 
 
 def on_move_game_up_button_click(e):
+    if not ui_enabled:
+        return
+
     if not current_directory:
         show_select_directory_msg()
         return
@@ -582,6 +588,9 @@ def on_move_game_up_button_click(e):
 
 
 def on_move_game_down_button_click(e):
+    if not ui_enabled:
+        return
+
     if not current_directory:
         show_select_directory_msg()
         return
@@ -591,6 +600,9 @@ def on_move_game_down_button_click(e):
 
 def on_sort_games_button_click(e):
     global games_list
+
+    if not ui_enabled:
+        return
 
     if not current_directory:
         show_select_directory_msg()
@@ -730,7 +742,7 @@ def bgt_apply_changes():
             show_select_directory_msg()
             return
 
-        enable_all_buttons(False)
+        enable_ui(False)
 
         log('Applying changes')
 
@@ -747,7 +759,7 @@ def bgt_apply_changes():
         traceback.print_exc()
         log('Error: ' + str(x))
     finally:
-        enable_all_buttons(True)
+        enable_ui(True)
 
 
 def set_progress_bar(current_counter, len_operations):
@@ -806,7 +818,7 @@ def bgt_unpack_file(pathname, target_dir, callback):
             show_select_directory_msg()
             return
 
-        enable_all_buttons(False)
+        enable_ui(False)
 
         if os.path.exists(target_dir):
             deltree(target_dir)
@@ -826,7 +838,7 @@ def bgt_unpack_file(pathname, target_dir, callback):
 
         set_progress_bar(0, 0)
     finally:
-        enable_all_buttons(True)
+        enable_ui(True)
 
 
 def bgt_add_game(directory, new_game_data, delete_src_game_dir):
@@ -837,7 +849,7 @@ def bgt_add_game(directory, new_game_data, delete_src_game_dir):
             show_select_directory_msg()
             return
 
-        enable_all_buttons(False)
+        enable_ui(False)
 
         log('Adding game from ' + directory)
 
@@ -1018,11 +1030,14 @@ def bgt_add_game(directory, new_game_data, delete_src_game_dir):
 
         log('Done')
 
-        enable_all_buttons(True)
+        enable_ui(True)
 
 
 def on_apply_button_click(e):
     global background_thread_states
+
+    if not ui_enabled:
+        return
 
     if not current_directory:
         show_select_directory_msg()
@@ -1031,7 +1046,7 @@ def on_apply_button_click(e):
     if background_thread_states:
         return
 
-    enable_all_buttons(False)
+    enable_ui(False)
 
     background_thread_states.append({
         'state': BGT_STATE_APPLY_CHANGES,
@@ -1048,6 +1063,9 @@ def select_next_to_game(game_index):
 
 def on_delete_game_button_click(e):
     global games_list
+
+    if not ui_enabled:
+        return
 
     if not current_directory:
         show_select_directory_msg()
@@ -1073,6 +1091,9 @@ def on_delete_game_button_click(e):
 
 def on_delete_game_permanently_button_click(e):
     global games_list
+
+    if not ui_enabled:
+        return
 
     if not current_directory:
         show_select_directory_msg()
@@ -1259,6 +1280,9 @@ def on_unpack_done(pathname, target_dir):
 def on_add_game_from_arch_button_click(e):
     global background_thread_states
 
+    if not ui_enabled:
+        return
+
     if not current_directory:
         show_select_directory_msg()
         return
@@ -1268,7 +1292,7 @@ def on_add_game_from_arch_button_click(e):
 
     file_data = tkinter.filedialog.askopenfile(initialdir='~/Downloads', filetypes = (("7z files","*.7z"), ("zip files","*.zip"), ("rar files","*.rar"), ("all files","*.*")))
     if file_data:
-        enable_all_buttons(False)
+        enable_ui(False)
 
         background_thread_states.append({
             'state': BGT_STATE_UNPACK_FILE,
@@ -1283,6 +1307,9 @@ def on_add_game_from_arch_button_click(e):
 def on_add_game_button_click(e):
     global on_add_game_button_click_user_data
     global background_thread_states
+
+    if not ui_enabled:
+        return
 
     directory = None
     force = False
@@ -1306,7 +1333,7 @@ def on_add_game_button_click(e):
         directory = tkinter.filedialog.askdirectory(initialdir='~/Downloads/mt')
 
     if directory:
-        enable_all_buttons(False)
+        enable_ui(False)
 
         if not os.path.exists(os.path.join(directory, 'Game.ini')):
             game_name = detect_game_name(directory)
@@ -1329,7 +1356,7 @@ def on_add_game_button_click(e):
                     log('Deleting ' + directory)
                     deltree(directory)
 
-                enable_all_buttons(True)
+                enable_ui(True)
                 return
 
             if game_exists_by_name(game_name):
@@ -1339,7 +1366,7 @@ def on_add_game_button_click(e):
                     log('Deleting ' + directory)
                     deltree(directory)
 
-                enable_all_buttons(True)
+                enable_ui(True)
                 return
         else:
             new_game_data = None
@@ -1354,8 +1381,21 @@ def on_add_game_button_click(e):
         })
 
 
-def enable_all_buttons(enable):
-    global buttons_enabled
+def enable_ui(enable):
+    global ui_enabled
+    global select_dir_button
+    global exit_button
+    global move_game_up_button
+    global move_game_down_button
+    global sort_games_button
+    global apply_button
+    global add_game_button
+    global add_game_from_arch_button
+    global delete_game_button
+    global delete_game_permanently_button
+    global edit_game_button
+    global homepage_button
+    global games_listbox
 
     new_state = tkinter.NORMAL if enable else tkinter.DISABLED
 
@@ -1370,24 +1410,32 @@ def enable_all_buttons(enable):
     delete_game_button['state'] = new_state
     delete_game_permanently_button['state'] = new_state
     edit_game_button['state'] = new_state
+    homepage_button['state'] = new_state
+    games_listbox['state'] = new_state
 
-    buttons_enabled = new_state
+    ui_enabled = new_state == tkinter.NORMAL
 
 
 def on_root_window_exit():
     global background_thread_run
 
-    if buttons_enabled:
+    if ui_enabled:
         background_thread_run = False
         root_window.destroy()
 
 
 def on_exit_button_click(e):
+    if not ui_enabled:
+        return
+
     on_root_window_exit()
 
 
 def on_edit_game_button_click(e):
     global games_list
+
+    if not ui_enabled:
+        return
 
     if not current_directory:
         show_select_directory_msg()
@@ -1417,6 +1465,9 @@ def on_edit_game_button_click(e):
 
 
 def on_listbox_double_click(e):
+    if not ui_enabled:
+        return
+
     selected_game_index = games_listbox.curselection()
     if not selected_game_index:
         return
@@ -1425,6 +1476,9 @@ def on_listbox_double_click(e):
 
 
 def on_homepage_button_click(e):
+    if not ui_enabled:
+        return
+
     webbrowser.open_new(HOMEPAGE_URL)
 
 
