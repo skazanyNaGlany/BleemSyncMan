@@ -1,6 +1,6 @@
 # BleemSyncMan
 
-Simple GUI for https://github.com/pathartl/BleemSync written in Python3. You will need to put https://github.com/pathartl/BleemSync/releases/ to your USB pendrive, without Games directory, will be created automatically.
+Simple GUI for https://github.com/pathartl/BleemSync written in Python3. You will need to put https://github.com/pathartl/BleemSync/releases/ to your USB pendrive, without Games directory, it will be created automatically.
 
 Features:
 * add game from directory
@@ -11,5 +11,7 @@ Features:
 * create CUE file if missing
 
 Sorry, buy 2-discs games are not supported.
+
+Download at https://github.com/skazanyNaGlany/BleemSyncMan/releases
 
 Supports: Windows, Linux
