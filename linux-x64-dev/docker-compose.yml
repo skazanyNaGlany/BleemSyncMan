@@ -1,0 +1,17 @@
+# docker-compose stop && docker-compose down; docker-compose build && docker-compose run bleemsyncman
+version: "2"
+
+services:
+  bleemsyncman:
+    build: .
+    volumes:
+      - .:/root
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    environment:
+      - DISPLAY=${DISPLAY}
+    stdin_open: true
+    tty: true
+
+volumes:
+  root:
+
